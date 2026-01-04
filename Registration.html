@@ -14,27 +14,40 @@ h2 {color:#1a5f7a;text-align:center;margin-bottom:1.5rem;}
 form {background:white;padding:2rem;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.05);}
 .form-group {margin-bottom:1rem;}
 label {display:block;margin-bottom:0.5rem;font-weight:500;color:#444;}
-input, textarea {width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:5px;font-size:1rem;}
-input:focus, textarea:focus {outline:none;border-color:#1a5f7a;box-shadow:0 0 0 2px rgba(26,95,122,0.1);}
+input, textarea, select {width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:5px;font-size:1rem;}
+input:focus, textarea:focus, select:focus {outline:none;border-color:#1a5f7a;box-shadow:0 0 0 2px rgba(26,95,122,0.1);}
 button {background-color:#1a5f7a;color:white;border:none;padding:0.5rem 1rem;font-size:0.9rem;border-radius:5px;cursor:pointer;transition:0.3s;margin-top:5px;}
 button:hover {background-color:#154b61;}
 .result {margin-top:2rem;text-align:center;}
 .qr-container {margin-top:1rem;}
 .otp-code {font-size:1.5rem;color:#1a5f7a;font-weight:bold;margin-top:1rem;}
-.user-card {border:1px solid #ddd;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:5px;position:relative;border-radius:5px;cursor:pointer;margin-bottom:10px;}
-.user-fullName {grid-column: 1 / -1; margin-top:25px; font-weight:bold;}
+.user-card {border:1px solid #ddd;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:5px;position:relative;border-radius:5px;cursor:pointer;margin-bottom:10px;background:white;}
+.user-fullName {grid-column: 1 / -1; margin-top:25px; font-weight:bold; color:#1a5f7a;}
 .show-qr-btn {position:absolute;top:10px;right:70px;background:#ffcc00;color:#1a5f7a;font-weight:bold;padding:2px 6px;font-size:0.8rem;border-radius:3px;}
 .delete-btn {position:absolute;top:10px;right:10px;background:#ff4d4f;color:white;font-weight:bold;padding:2px 6px;font-size:0.8rem;border-radius:3px;}
-.modal, .edit-modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;}
+.edit-btn {position:absolute;top:10px;right:130px;background:#28a745;color:white;font-weight:bold;padding:2px 6px;font-size:0.8rem;border-radius:3px;}
+.modal, .edit-modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:1000;}
 .modal-content, .edit-modal-content {background:white;padding:2rem;border-radius:10px;text-align:center;width:90%;max-width:400px;}
 .edit-form {display:flex;flex-direction:column;gap:1rem;}
 .edit-form input, .edit-form textarea {width:100%;}
-.close-btn {cursor:pointer;background:#1a5f7a;color:white;padding:0.3rem 0.6rem;border:none;border-radius:5px;}
+.close-btn {cursor:pointer;background:#1a5f7a;color:white;padding:0.3rem 0.6rem;border:none;border-radius:5px;margin-top:1rem;}
+.filter-controls {background:white;padding:1.5rem;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,0.05);margin-top:2rem;}
+.filter-controls h3 {color:#1a5f7a;margin-bottom:1rem;}
+.search-box {display:flex;gap:10px;margin-bottom:1rem;}
+.search-box input {flex:1;}
+.filter-buttons {display:flex;gap:10px;flex-wrap:wrap;}
+.filter-buttons button {flex:1;min-width:150px;}
+.empty-message {text-align:center;padding:2rem;color:#666;background:white;border-radius:10px;margin-top:1rem;}
+.info-label {background:#e8f4fc;color:#1a5f7a;padding:3px 8px;border-radius:3px;font-size:0.85rem;margin-left:5px;}
+.active-filter {background-color:#154b61 !important;color:white !important;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+.filter-status {display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding:0.5rem;background:#f0f8ff;border-radius:5px;}
+.filter-title {color:#1a5f7a;font-weight:bold;}
+.filter-count {background:#1a5f7a;color:white;padding:3px 10px;border-radius:15px;font-size:0.9rem;}
 </style>
 </head>
 <body>
 <div class="container">
-    <h2>ثبت درخواست ویزا</h2>
+    <h2>سیستم ثبت درخواست ویزا</h2>
     <form id="visaForm">
         <div class="form-group"><label>اسم کامل</label><input type="text" id="fullName" name="fullName" required></div>
         <div class="form-group"><label>اسم پدر</label><input type="text" id="fatherName" name="fatherName" required></div>
@@ -44,7 +57,7 @@ button:hover {background-color:#154b61;}
         <div class="form-group"><label>نوع ویزا</label><textarea id="visaType" name="visaType" placeholder="نوع ویزا را وارد کنید" rows="2" required></textarea></div>
         <div class="form-group"><label>وضیعت فعلی</label><textarea id="status" name="status" placeholder="وضیعت فعلی را بنویسید" rows="2" required></textarea></div>
         <div class="form-group"><label>تاریخ تحویل داده</label><input type="text" id="deliveryDate" name="deliveryDate" readonly></div>
-        <button type="submit">ذخیره</button>
+        <button type="submit">ذخیره درخواست</button>
     </form>
 
     <div class="result" id="result">
@@ -52,8 +65,26 @@ button:hover {background-color:#154b61;}
         <div class="otp-code" id="otpCode"></div>
     </div>
 
-    <button id="showUsersBtn">اشخاص ثبت شده</button>
-    <div id="usersListDiv" style="margin-top:2rem;"></div>
+    <div class="filter-controls" id="filterControls">
+        <h3>مدیریت درخواست‌ها</h3>
+        
+        <div class="filter-status">
+            <div class="filter-title" id="currentFilterTitle">درخواست‌های 10 روز اخیر</div>
+            <div class="filter-count" id="currentFilterCount">0 مورد</div>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="جستجو با نام کامل یا کد OTP">
+            <button id="searchBtn">🔍 جستجو</button>
+        </div>
+        
+        <div class="filter-buttons">
+            <button id="showRecentBtn" class="active-filter">۱۰ روز اخیر</button>
+            <button id="showAllBtn">همه درخواست‌ها</button>
+        </div>
+    </div>
+
+    <div id="usersListDiv" style="margin-top:1rem;"></div>
 </div>
 
 <div class="modal" id="qrModal">
@@ -83,7 +114,7 @@ button:hover {background-color:#154b61;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
 
 const firebaseConfig = {
@@ -112,14 +143,35 @@ const visaForm = document.getElementById('visaForm');
 const qrContainer = document.getElementById('qrContainer');
 const otpCodeEl = document.getElementById('otpCode');
 const usersListDiv = document.getElementById('usersListDiv');
-const showUsersBtn = document.getElementById('showUsersBtn');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const showRecentBtn = document.getElementById('showRecentBtn');
+const showAllBtn = document.getElementById('showAllBtn');
 const qrModal = document.getElementById('qrModal');
 const modalQR = document.getElementById('modalQR');
 const closeModal = document.getElementById('closeModal');
 const editModal = document.getElementById('editModal');
 const closeEditModal = document.getElementById('closeEditModal');
 const editForm = document.getElementById('editForm');
+const currentFilterTitle = document.getElementById('currentFilterTitle');
+const currentFilterCount = document.getElementById('currentFilterCount');
+
 let editDocId = null;
+let allUsers = [];
+let currentFilter = 'recent'; // پیش‌فرض: 10 روز اخیر
+
+// تبدیل تاریخ شمسی به میلادی برای محاسبات
+function persianToGregorian(persianDate) {
+  const parts = persianDate.split('/');
+  if (parts.length !== 3) return new Date();
+  
+  const jy = parseInt(parts[0]);
+  const jm = parseInt(parts[1]);
+  const jd = parseInt(parts[2]);
+  
+  const g = jalaali.toGregorian(jy, jm, jd);
+  return new Date(g.gy, g.gm - 1, g.gd);
+}
 
 // محاسبه خودکار باقی مانده
 function calculateRemaining(){
@@ -141,7 +193,8 @@ visaForm.addEventListener('submit', async e=>{
     remaining: document.getElementById('remaining').value,
     visaType: document.getElementById('visaType').value,
     status: document.getElementById('status').value,
-    deliveryDate: document.getElementById('deliveryDate').value
+    deliveryDate: document.getElementById('deliveryDate').value,
+    timestamp: Timestamp.fromDate(new Date())
   };
   const otp = Math.floor(1000 + Math.random()*9000);
   data.otp = otp;
@@ -151,67 +204,225 @@ visaForm.addEventListener('submit', async e=>{
   const qr = new QRious({element: document.createElement('canvas'), value: JSON.stringify(data), size:200});
   qrContainer.appendChild(qr.element);
 
-  try { await addDoc(collection(db, "visaRequests"), data); alert('اطلاعات با موفقیت ذخیره شد!'); }
-  catch(err){ console.error(err); }
+  try { 
+    await addDoc(collection(db, "visaRequests"), data); 
+    
+    // بارگذاری مجدد لیست‌ها
+    await loadAllUsers();
+    if (currentFilter === 'recent') {
+      await showRecentUsers();
+    } else {
+      displayUsers(allUsers, 'همه درخواست‌ها');
+    }
+  }
+  catch(err){ 
+    console.error(err); 
+    alert('خطا در ثبت اطلاعات!');
+  }
 
   visaForm.reset();
   document.getElementById('deliveryDate').value = getPersianDate();
 });
 
-// نمایش کاربران ثبت شده
-showUsersBtn.addEventListener('click', async () => {
+// نمایش کاربران
+async function displayUsers(users = null, filterType = '۱۰ روز اخیر', filterName = 'recent') {
   usersListDiv.innerHTML = '';
-  const snapshot = await getDocs(collection(db, "visaRequests"));
-  snapshot.forEach(docSnap => {
-    const d = docSnap.data();
+  currentFilter = filterName;
+  
+  if (!users) {
+    usersListDiv.innerHTML = '<div class="empty-message">در حال بارگذاری اطلاعات...</div>';
+    return;
+  }
+  
+  // به‌روزرسانی وضعیت فیلتر
+  currentFilterTitle.textContent = filterType;
+  currentFilterCount.textContent = `${users.length} مورد`;
+  
+  // به‌روزرسالی کلاس‌های فعال دکمه‌ها
+  showRecentBtn.classList.remove('active-filter');
+  showAllBtn.classList.remove('active-filter');
+  
+  if (filterName === 'recent') {
+    showRecentBtn.classList.add('active-filter');
+  } else if (filterName === 'all') {
+    showAllBtn.classList.add('active-filter');
+  } else if (filterName === 'search') {
+    showRecentBtn.classList.remove('active-filter');
+    showAllBtn.classList.remove('active-filter');
+  }
+  
+  if (users.length === 0) {
+    usersListDiv.innerHTML = `<div class="empty-message">موردی یافت نشد. <span class="info-label">${filterType}</span></div>`;
+    return;
+  }
+  
+  users.forEach(userData => {
+    const d = userData.data;
     const div = document.createElement('div');
     div.classList.add('user-card');
     div.innerHTML = `
-      <button class="show-qr-btn">دیدن بارکد</button>
+      <button class="edit-btn">ویرایش</button>
+      <button class="show-qr-btn">بارکد</button>
       <button class="delete-btn">حذف</button>
-      <div class="user-fullName">${d.fullName}</div>
+      <div class="user-fullName">${d.fullName} <span style="font-size:0.8rem; color:#666;"></span></div>
       <div><b>اسم پدر:</b></div><div>${d.fatherName}</div>
-      <div><b>مبلغ:</b></div><div>${d.amount}</div>
-      <div><b>رسید:</b></div><div>${d.receipt}</div>
-      <div><b>باقی مانده:</b></div><div>${d.remaining}</div>
+      <div><b>مبلغ:</b></div><div>${d.amount} افغانی</div>
+      <div><b>رسید:</b></div><div>${d.receipt} افغانی</div>
+      <div><b>باقی مانده:</b></div><div>${d.remaining} افغانی</div>
       <div><b>نوع ویزا:</b></div><div>${d.visaType}</div>
       <div><b>وضیعت فعلی:</b></div><div>${d.status}</div>
-      <div><b>تاریخ تحویل داده:</b></div><div>${d.deliveryDate}</div>
-      <div><b>کد OTP:</b></div><div>${d.otp}</div>
+      <div><b>تاریخ تحویل:</b></div><div>${d.deliveryDate}</div>
+      <div><b>کد رهگیری:</b></div><div><strong>${d.otp}</strong></div>
     `;
     usersListDiv.appendChild(div);
 
     div.querySelector('.show-qr-btn').addEventListener('click', ()=>{
       qrModal.style.display='flex';
-      new QRious({element:modalQR,value:JSON.stringify(d),size:250});
+      new QRious({element:modalQR, value:JSON.stringify(d), size:250});
     });
 
     div.querySelector('.delete-btn').addEventListener('click', async ()=>{
-      if(confirm('آیا مطمئن هستید می‌خواهید حذف شود؟')){
-        await deleteDoc(doc(db,"visaRequests",docSnap.id));
-        div.remove();
+      if(confirm(`آیا از حذف درخواست ${d.fullName} با کد ${d.otp} مطمئن هستید؟`)){
+        try {
+          await deleteDoc(doc(db,"visaRequests",userData.id));
+          div.remove();
+          // به‌روزرسانی لیست
+          allUsers = allUsers.filter(u => u.id !== userData.id);
+          
+          // به‌روزرسانی نمایش بر اساس فیلتر فعلی
+          if (currentFilter === 'recent') {
+            await showRecentUsers();
+          } else if (currentFilter === 'all') {
+            displayUsers(allUsers, 'همه درخواست‌ها', 'all');
+          } else if (currentFilter === 'search') {
+            searchUsers();
+          }
+        } catch (error) {
+          alert('خطا در حذف اطلاعات!');
+        }
       }
     });
 
-    div.addEventListener('dblclick', ()=>{
+    div.querySelector('.edit-btn').addEventListener('click', ()=>{
       editModal.style.display='flex';
-      editForm.editFullName.value=d.fullName;
-      editForm.editFatherName.value=d.fatherName;
-      editForm.editAmount.value=d.amount;
-      editForm.editReceipt.value=d.receipt;
-      editForm.editRemaining.value=d.remaining;
-      editForm.editVisaType.value=d.visaType;
-      editForm.editStatus.value=d.status;
-      editForm.editDeliveryDate.value=d.deliveryDate;
-      editDocId = docSnap.id;
+      editForm.editFullName.value = d.fullName;
+      editForm.editFatherName.value = d.fatherName;
+      editForm.editAmount.value = d.amount;
+      editForm.editReceipt.value = d.receipt;
+      editForm.editRemaining.value = d.remaining;
+      editForm.editVisaType.value = d.visaType;
+      editForm.editStatus.value = d.status;
+      editForm.editDeliveryDate.value = d.deliveryDate;
+      editDocId = userData.id;
     });
   });
+}
+
+// بارگذاری همه کاربران
+async function loadAllUsers() {
+  const snapshot = await getDocs(collection(db, "visaRequests"));
+  allUsers = snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+  return allUsers;
+}
+
+// نمایش کاربران 10 روز اخیر
+async function showRecentUsers() {
+  const tenDaysAgo = new Date();
+  tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+  
+  const recentUsers = allUsers.filter(user => {
+    // اگر timestamp وجود دارد، از آن استفاده کن
+    if (user.data.timestamp) {
+      const userDate = user.data.timestamp.toDate();
+      return userDate >= tenDaysAgo;
+    }
+    
+    // اگر timestamp وجود ندارد، از تاریخ شمسی استفاده کن
+    try {
+      const userDate = persianToGregorian(user.data.deliveryDate);
+      return userDate >= tenDaysAgo;
+    } catch {
+      return false;
+    }
+  });
+  
+  // مرتب‌سازی بر اساس تاریخ (جدیدترین اول)
+  recentUsers.sort((a, b) => {
+    const dateA = a.data.timestamp ? a.data.timestamp.toDate() : persianToGregorian(a.data.deliveryDate);
+    const dateB = b.data.timestamp ? b.data.timestamp.toDate() : persianToGregorian(b.data.deliveryDate);
+    return dateB - dateA;
+  });
+  
+  displayUsers(recentUsers, 'درخواست‌های ۱۰ روز اخیر', 'recent');
+}
+
+// جستجو در کاربران
+function searchUsers() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  
+  if (!searchTerm) {
+    // اگر جستجو خالی بود، برگرد به فیلتر قبلی
+    if (currentFilter === 'recent') {
+      showRecentUsers();
+    } else {
+      displayUsers(allUsers, 'همه درخواست‌ها', 'all');
+    }
+    return;
+  }
+  
+  const filteredUsers = allUsers.filter(user => {
+    const fullNameMatch = user.data.fullName && user.data.fullName.toLowerCase().includes(searchTerm);
+    const otpMatch = user.data.otp && user.data.otp.toString().includes(searchTerm);
+    
+    return fullNameMatch || otpMatch;
+  });
+  
+  // مرتب‌سازی نتایج جستجو
+  filteredUsers.sort((a, b) => {
+    const dateA = a.data.timestamp ? a.data.timestamp.toDate() : persianToGregorian(a.data.deliveryDate);
+    const dateB = b.data.timestamp ? b.data.timestamp.toDate() : persianToGregorian(b.data.deliveryDate);
+    return dateB - dateA;
+  });
+  
+  displayUsers(filteredUsers, `نتایج جستجو: "${searchTerm}"`, 'search');
+}
+
+// رویدادها
+showRecentBtn.addEventListener('click', async () => {
+  if (allUsers.length > 0) {
+    await showRecentUsers();
+  } else {
+    await loadAllUsers();
+    await showRecentUsers();
+  }
+});
+
+showAllBtn.addEventListener('click', async () => {
+  if (allUsers.length === 0) {
+    await loadAllUsers();
+  }
+  // مرتب‌سازی همه کاربران بر اساس تاریخ (جدیدترین اول)
+  const sortedUsers = [...allUsers].sort((a, b) => {
+    const dateA = a.data.timestamp ? a.data.timestamp.toDate() : persianToGregorian(a.data.deliveryDate);
+    const dateB = b.data.timestamp ? b.data.timestamp.toDate() : persianToGregorian(b.data.deliveryDate);
+    return dateB - dateA;
+  });
+  displayUsers(sortedUsers, 'همه درخواست‌ها', 'all');
+});
+
+searchBtn.addEventListener('click', searchUsers);
+
+searchInput.addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') {
+    searchUsers();
+  }
 });
 
 // ذخیره ویرایش
 editForm.addEventListener('submit', async e=>{
   e.preventDefault();
   if(!editDocId) return;
+  
   const updatedData = {
     fullName: editForm.editFullName.value,
     fatherName: editForm.editFatherName.value,
@@ -220,23 +431,71 @@ editForm.addEventListener('submit', async e=>{
     remaining: editForm.editRemaining.value,
     visaType: editForm.editVisaType.value,
     status: editForm.editStatus.value,
-    deliveryDate: editForm.editDeliveryDate.value
+    deliveryDate: editForm.editDeliveryDate.value,
+    timestamp: Timestamp.fromDate(new Date())
   };
-  await updateDoc(doc(db,"visaRequests",editDocId), updatedData);
-  alert('ویرایش با موفقیت انجام شد!');
-  editModal.style.display='none';
-  showUsersBtn.click();
+  
+  try {
+    await updateDoc(doc(db,"visaRequests",editDocId), updatedData);
+  
+    
+    // به‌روزرسانی لیست
+    const index = allUsers.findIndex(u => u.id === editDocId);
+    if (index !== -1) {
+      allUsers[index].data = updatedData;
+    }
+    
+    editModal.style.display='none';
+    
+    // به‌روزرسانی نمایش بر اساس فیلتر فعلی
+    if (currentFilter === 'recent') {
+      await showRecentUsers();
+    } else if (currentFilter === 'all') {
+      const sortedUsers = [...allUsers].sort((a, b) => {
+        const dateA = a.data.timestamp ? a.data.timestamp.toDate() : persianToGregorian(a.data.deliveryDate);
+        const dateB = b.data.timestamp ? b.data.timestamp.toDate() : persianToGregorian(b.data.deliveryDate);
+        return dateB - dateA;
+      });
+      displayUsers(sortedUsers, 'همه درخواست‌ها', 'all');
+    } else if (currentFilter === 'search') {
+      searchUsers();
+    }
+  } catch (error) {
+    alert('خطا در ویرایش اطلاعات!');
+    console.error(error);
+  }
+});
+
+// محاسبه باقی مانده در ویرایش
+editForm.editAmount.addEventListener('input', ()=>{
+  editForm.editRemaining.value = (parseFloat(editForm.editAmount.value) || 0) - (parseFloat(editForm.editReceipt.value) || 0);
+});
+editForm.editReceipt.addEventListener('input', ()=>{
+  editForm.editRemaining.value = (parseFloat(editForm.editAmount.value) || 0) - (parseFloat(editForm.editReceipt.value) || 0);
 });
 
 // بستن مودال‌ها
 closeModal.addEventListener('click',()=>qrModal.style.display='none');
 closeEditModal.addEventListener('click',()=>editModal.style.display='none');
 
-// محاسبه باقی مانده در ویرایش
-editForm.editAmount.addEventListener('input', ()=>{editForm.editRemaining.value = editForm.editAmount.value - editForm.editReceipt.value;});
-editForm.editReceipt.addEventListener('input', ()=>{editForm.editRemaining.value = editForm.editAmount.value - editForm.editReceipt.value;});
+// بستن مودال با کلیک بیرون
+window.addEventListener('click', (e) => {
+  if (e.target === qrModal) qrModal.style.display = 'none';
+  if (e.target === editModal) editModal.style.display = 'none';
+});
+
+// بارگذاری اولیه - نمایش 10 روز اخیر به صورت پیش‌فرض
+document.addEventListener('DOMContentLoaded', async () => {
+  usersListDiv.innerHTML = '<div class="empty-message">در حال بارگذاری درخواست‌های 10 روز اخیر...</div>';
+  
+  try {
+    await loadAllUsers();
+    await showRecentUsers(); // نمایش 10 روز اخیر به صورت پیش‌فرض
+  } catch (error) {
+    usersListDiv.innerHTML = '<div class="empty-message">خطا در بارگذاری اطلاعات. لطفا صفحه را رفرش کنید.</div>';
+    console.error('خطا در بارگذاری اولیه:', error);
+  }
+});
 </script>
 </body>
 </html>
-
-
